@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Booking Confirmation — MUST{% endblock %}
+{% block content %}
+<section class="panel confirmation">
+  <div class="success-icon">✓</div><p class="eyebrow">BOOKING SAVED</p><h1>Classroom booking confirmed</h1>
+  <p>Your booking has been saved in this system. Keep the reference below.</p>
+  <div class="reference">{{ reference }}</div>
+  <div class="details">
+    <div><span>Classroom</span><strong>{{ room_name }}</strong></div>
+    <div><span>Date</span><strong>{{ booking_date }}</strong></div>
+    <div><span>Time</span><strong>{{ start }}–{{ end }}</strong></div>
+    <div><span>Module</span><strong>{{ module }}</strong></div>
+    <div><span>Registration number</span><strong>{{ registration }}</strong></div>
+  </div>
+  <p class="hint">This confirmation only verifies a booking in this website. It is not official university approval unless MUST authorizes this system.</p>
+  <a class="button" href="{{ url_for('index', date=booking_date) }}">Return to availability</a>
+</section>
+{% endblock %}

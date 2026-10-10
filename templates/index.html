@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+  <div><p class="eyebrow">MALAWI UNIVERSITY OF SCIENCE AND TECHNOLOGY</p><h1>Find a classroom.<br><span>Book with confidence.</span></h1>
+  <p>Check room availability before submitting a booking request.</p></div>
+  <div class="hero-icon">▦</div>
+</section>
+<div class="reminder"><strong>Important reminder</strong><p>Please try to maintain your normal classrooms as indicated on the normal timetable.</p></div>
+<section class="panel">
+  <div class="section-heading"><div><h2>Classroom availability</h2><p>Choose a date and optional time window to check rooms.</p></div></div>
+  <form method="get" class="filter-grid">
+    <label>Date<input type="date" name="date" value="{{ chosen_date }}" required></label>
+    <label>Start time (optional)<input type="time" name="start" value="{{ start }}"></label>
+    <label>End time (optional)<input type="time" name="end" value="{{ end }}"></label>
+    <button class="button secondary" type="submit">Check availability</button>
+  </form>
+  <p class="hint">Rooms: Block A (15), Block B (15), Block C (10). With no time filter, any room with a booking that day is marked booked.</p>
+  <div class="room-grid">
+    {% for room in rooms %}
+      <div class="room-card">
+        <div><span class="room-block">BLOCK {{ room.block }}</span><h3>{{ room.name }}</h3></div>
+        {% if room.id in booked_room_ids %}<span class="status booked">Booked</span>{% else %}<span class="status available">Available</span>{% endif %}
+      </div>
+    {% endfor %}
+  </div>
+  {% if start and end and start >= end %}<p class="notice error">The end time must be later than the start time.</p>{% endif %}
+</section>
+<section class="panel">
+  <div class="section-heading"><div><h2>Request a classroom</h2><p>All fields are required. Your request is checked against existing bookings.</p></div></div>
+  <form method="post" action="{{ url_for('book') }}" class="form-grid">
+    <label>Registration number<input name="registration_number" placeholder="e.g. BSC/2024/001" required maxlength="60"></label>
+    <label>Year of study<select name="year_of_study" required><option value="">Select year</option><option>Year 1</option><option>Year 2</option><option>Year 3</option><option>Year 4</option><option>Other</option></select></label>
+    <label class="wide">Programme of study<input name="programme" placeholder="e.g. Meteorology and Climate Science" required maxlength="120"></label>
+    <label>Module abbreviation<input name="module_code" placeholder="e.g. HMET-3201" required maxlength="40"></label>
+    <label>Classroom<select name="room_name" required><option value="">Select a classroom</option>{% for room in rooms %}<option value="{{ room.name }}">{{ room.name }} — Block {{ room.block }}</option>{% endfor %}</select></label>
+    <label>Date<input type="date" name="booking_date" value="{{ chosen_date }}" required></label>
+    <label>Start time<input type="time" name="start_time" value="{{ start }}" required></label>
+    <label>End time<input type="time" name="end_time" value="{{ end }}" required></label>
+    <div class="wide"><button class="button" type="submit">Check and book classroom</button></div>
+  </form>
+</section>
+<section class="panel">
+  <div class="section-heading"><div><h2>Bookings for {{ chosen_date }}</h2><p>Bookings saved in this website only.</p></div></div>
+  {% if bookings %}
+  <div class="table-wrap"><table><thead><tr><th>Room</th><th>Time</th><th>Module</th><th>Reference</th></tr></thead><tbody>
+  {% for b in bookings %}<tr><td>{{ b.room_name }}</td><td>{{ b.start_time }}–{{ b.end_time }}</td><td>{{ b.module_code }}</td><td>{{ b.reference }}</td></tr>{% endfor %}
+  </tbody></table></div>
+  {% else %}<p class="empty">No bookings have been entered for this date yet.</p>{% endif %}
+</section>
+{% endblock %}

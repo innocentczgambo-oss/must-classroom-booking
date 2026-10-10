@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="panel narrow"><h1>Admin login</h1><p>Authorized staff only.</p>
+<form method="post" class="form-grid one"><label>Admin password<input type="password" name="password" required autocomplete="current-password"></label><button class="button" type="submit">Sign in</button></form>
+<p class="hint">Set a strong ADMIN_PASSWORD environment variable before deployment. The development default must not be used publicly.</p></section>
+{% endblock %}
