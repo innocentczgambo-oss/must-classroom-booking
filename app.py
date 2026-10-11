@@ -5,8 +5,8 @@ from datetime import datetime, date
 from functools import wraps
 from flask import Flask, render_template, request, redirect, url_for, flash, session, abort
 
-app = Flask(__name__)
-app.secret_key = os.environ.get("SECRET_KEY")
+app = Flask(__name__,template_folder='templates',static_folder='static')
+app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-key-12345")
 if not app.secret_key:
     raise RuntimeError("Set the SECRET_KEY environment variable.")
 
@@ -15,7 +15,7 @@ DB_PATH = os.environ.get(
     os.path.join(os.path.dirname(__file__), "classrooms.db")
 )
 
-ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD")
+ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "i to deh cent")
 if not ADMIN_PASSWORD:
     raise RuntimeError("Set the ADMIN_PASSWORD environment variable.")
 
