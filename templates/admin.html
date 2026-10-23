@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 <section class="hero compact"><div><p class="eyebrow">ADMIN DASHBOARD</p><h1>Manage bookings</h1><p>Review and cancel saved classroom bookings.</p></div><a class="button secondary" href="{{ url_for('admin_logout') }}">Log out</a></section>
+<a href="{{ url_for('admin_queries') }}">Open Message Inbox</a>
 <section class="panel"><div class="section-heading"><div><h2>All bookings</h2><p>{{ bookings|length }} booking(s) recorded.</p></div></div>
 {% if bookings %}<div class="table-wrap"><table><thead><tr><th>Reference</th><th>Date</th><th>Room</th><th>Time</th><th>Module</th><th>Registration</th><th>Action</th></tr></thead><tbody>
 {% for b in bookings %}<tr><td>{{ b.reference }}</td><td>{{ b.booking_date }}</td><td>{{ b.room_name }}</td><td>{{ b.start_time }}–{{ b.end_time }}</td><td>{{ b.module_code }}</td><td>{{ b.registration_number }}</td><td><form method="post" action="{{ url_for('cancel_booking', booking_id=b.id) }}" onsubmit="return confirm('Cancel this booking?')"><button class="button danger small" type="submit">Cancel</button></form></td></tr>{% endfor %}

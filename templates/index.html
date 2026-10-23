@@ -14,7 +14,7 @@
     <label>End time (optional)<input type="time" name="end" value="{{ end }}"></label>
     <button class="button secondary" type="submit">Check availability</button>
   </form>
-  <p class="hint">Rooms: Block A (15), Block B (15), Block C (10). With no time filter, any room with a booking that day is marked booked.</p>
+  <p class="hint">Rooms: Blocks A and B exclude rooms 01, 03 and 05; Block C is unchanged. Additional venues are also available. With no time filter, any room with a booking that day is marked booked.</p>
   <div class="room-grid">
     {% for room in rooms %}
       <div class="room-card">
@@ -30,7 +30,15 @@
   <form method="post" action="{{ url_for('book') }}" class="form-grid">
     <label>Registration number<input name="registration_number" placeholder="e.g. BSC/2024/001" required maxlength="60"></label>
     <label>Year of study<select name="year_of_study" required><option value="">Select year</option><option>Year 1</option><option>Year 2</option><option>Year 3</option><option>Year 4</option><option>Other</option></select></label>
-    <label class="wide">Programme of study<input name="programme" placeholder="e.g. Meteorology and Climate Science" required maxlength="120"></label>
+    <label class="wide">Programme / cohort code
+      <select name="programme" required>
+        <option value="">Select your MUST cohort</option>
+        {% for code, programme_name in cohorts.items() %}
+          <option value="{{ code }}">{{ code }} — {{ programme_name }}</option>
+        {% endfor %}
+      </select>
+      <small class="hint">Choose the official cohort code shown on the MUST timetable.</small>
+    </label>
     <label>Module abbreviation<input name="module_code" placeholder="e.g. HMET-3201" required maxlength="40"></label>
     <label>Classroom<select name="room_name" required><option value="">Select a classroom</option>{% for room in rooms %}<option value="{{ room.name }}">{{ room.name }} — Block {{ room.block }}</option>{% endfor %}</select></label>
     <label>Date<input type="date" name="booking_date" value="{{ chosen_date }}" required></label>
@@ -38,6 +46,18 @@
     <label>End time<input type="time" name="end_time" value="{{ end }}" required></label>
     <div class="wide"><button class="button" type="submit">Check and book classroom</button></div>
   </form>
+</section>
+<section class="panel" id="contact-admin">
+  <div class="section-heading"><div><h2>Questions or queries?</h2><p>Send a message to the classroom booking administrator.</p></div></div>
+  <form method="post" action="{{ url_for('send_query') }}" class="form-grid">
+    <label>Your name<input name="sender_name" required maxlength="100" placeholder="Enter your name"></label>
+    <label>Registration number (optional)<input name="registration_number" maxlength="60" placeholder="e.g. BSC/2024/001"></label>
+    <label>Email address (optional)<input type="email" name="contact_email" maxlength="254" placeholder="For a reply, if available"></label>
+    <label>Subject<input name="subject" required maxlength="150" placeholder="What is your question about?"></label>
+    <label class="wide">Message<textarea name="message" required maxlength="5000" rows="5" placeholder="Write your question or query here..."></textarea></label>
+    <div class="wide"><button class="button" type="submit">Send message to admin</button></div>
+  </form>
+  <p class="hint">Messages are saved in the website's administrator inbox. This form does not send email notifications.</p>
 </section>
 <section class="panel">
   <div class="section-heading"><div><h2>Bookings for {{ chosen_date }}</h2><p>Bookings saved in this website only.</p></div></div>

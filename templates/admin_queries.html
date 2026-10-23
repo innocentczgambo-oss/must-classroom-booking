@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="panel">
+  <div class="section-heading">
+    <div><h2>Administrator message inbox</h2><p>{{ new_count }} new message(s). Review questions sent by students and representatives.</p></div>
+    <a class="button secondary" href="{{ url_for('admin') }}">Back to bookings</a>
+    <a href="{{ url_for('admin_queries') }}">Message Inbox</a>
+  </div>
+  {% if queries %}
+    <div class="query-list">
+      {% for q in queries %}
+        <article class="panel query-card">
+          <div class="section-heading">
+            <div><span class="status {% if q.status == 'Resolved' %}available{% elif q.status == 'New' %}booked{% else %}available{% endif %}">{{ q.status }}</span><h3>{{ q.subject }}</h3></div>
+            <small>{{ q.created_at.replace('T', ' ') }}</small>
+          </div>
+          <p><strong>From:</strong> {{ q.sender_name }}{% if q.registration_number %} ({{ q.registration_number }}){% endif %}</p>
+          {% if q.contact_email %}<p><strong>Contact email:</strong> <a href="mailto:{{ q.contact_email }}">{{ q.contact_email }}</a></p>{% endif %}
+          <div class="message-body">{{ q.message }}</div>
+          <form method="post" action="{{ url_for('update_query_status', query_id=q.id) }}" class="filter-grid">
+            <label>Update status<select name="status" required>
+              <option value="New" {% if q.status == 'New' %}selected{% endif %}>New</option>
+              <option value="In progress" {% if q.status == 'In progress' %}selected{% endif %}>In progress</option>
+              <option value="Resolved" {% if q.status == 'Resolved' %}selected{% endif %}>Resolved</option>
+            </select></label>
+            <button class="button secondary" type="submit">Save status</button>
+          </form>
+        </article>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="empty">There are no messages yet.</p>
+  {% endif %}
+</section>
+<style>
+.query-list { display: grid; gap: 1rem; }
+.query-card { margin: 0; }
+.message-body { white-space: pre-wrap; overflow-wrap: anywhere; padding: 1rem; background: var(--surface, #f5f7fa); border-radius: .5rem; margin: 1rem 0; }
+</style>
+{% endblock %}
